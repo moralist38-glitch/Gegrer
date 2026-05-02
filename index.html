@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ScriptWriter Pro - Приложение для написания сценариев</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h1>🎬 ScriptWriter Pro</h1>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <button class="nav-btn active" data-view="dashboard">
+                    <span class="icon">📊</span> Обзор
+                </button>
+                <button class="nav-btn" data-view="scenes">
+                    <span class="icon">📝</span> Сцены
+                </button>
+                <button class="nav-btn" data-view="characters">
+                    <span class="icon">👥</span> Персонажи
+                </button>
+                <button class="nav-btn" data-view="relationships">
+                    <span class="icon">🔗</span> Связи
+                </button>
+                <button class="nav-btn" data-view="timeline">
+                    <span class="icon">📅</span> Линия сюжета
+                </button>
+                <button class="nav-btn" data-view="calendar">
+                    <span class="icon">🗓️</span> Календарь
+                </button>
+                <button class="nav-btn" data-view="dialogues">
+                    <span class="icon">💬</span> Диалоги
+                </button>
+                <button class="nav-btn" data-view="notes">
+                    <span class="icon">📌</span> Заметки
+                </button>
+                <button class="nav-btn" data-view="search">
+                    <span class="icon">🔍</span> Поиск
+                </button>
+                <button class="nav-btn" data-view="export">
+                    <span class="icon">📤</span> Экспорт
+                </button>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <button id="focusModeBtn" class="action-btn" title="Режим фокусировки">🎯 Фокус</button>
+                <button id="exportBtn" class="action-btn">💾 Проект</button>
+                <button id="importBtn" class="action-btn">📂 Импорт</button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Dashboard View -->
+            <section id="dashboardView" class="view active">
+                <div class="view-header">
+                    <h2>Обзор проекта</h2>
+                </div>
+                
+                <div class="dashboard-container">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon">📝</div>
+                            <div class="stat-value" id="statScenes">0</div>
+                            <div class="stat-label">Сцен</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">👥</div>
+                            <div class="stat-value" id="statCharacters">0</div>
+                            <div class="stat-label">Персонажей</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">🔗</div>
+                            <div class="stat-value" id="statRelationships">0</div>
+                            <div class="stat-label">Связей</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">📖</div>
+                            <div class="stat-value" id="statWords">0</div>
+                            <div class="stat-label">Слов</div>
+                        </div>
+                    </div>
+                    
+                    <div class="dashboard-sections">
+                        <div class="dashboard-section">
+                            <h3>📈 Статус сцен</h3>
+                            <div class="status-bars" id="statusBars"></div>
+                        </div>
+                        
+                        <div class="dashboard-section">
+                            <h3>🎭 Персонажи по ролям</h3>
+                            <div class="role-distribution" id="roleDistribution"></div>
+                        </div>
+                        
+                        <div class="dashboard-section">
+                            <h3>📋 Последние изменения</h3>
+                            <div class="recent-changes" id="recentChanges"></div>
+                        </div>
+                        
+                        <div class="dashboard-section">
+                            <h3>🏷️ Теги проекта</h3>
+                            <div class="project-tags" id="projectTags"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Scenes View -->
+            <section id="scenesView" class="view">
+                <div class="view-header">
+                    <h2>Сцены и повествование</h2>
+                    <div class="header-actions">
+                        <select id="sceneFilter" class="filter-select">
+                            <option value="all">Все сцены</option>
+                            <option value="draft">Черновики</option>
+                            <option value="review">На проверке</option>
+                            <option value="ready">Готовые</option>
+                        </select>
+                        <select id="actFilter" class="filter-select">
+                            <option value="">Все акты</option>
+                            <option value="1">Акт 1</option>
+                            <option value="2">Акт 2</option>
+                            <option value="3">Акт 3</option>
+                        </select>
+                        <button id="addSceneBtn" class="primary-btn">+ Добавить сцену</button>
+                    </div>
+                </div>
+                
+                <div class="scenes-container">
+                    <div class="scene-list" id="sceneList"></div>
+                    <div class="scene-editor" id="sceneEditor">
+                        <div class="editor-meta">
+                            <div class="meta-row">
+                                <select id="sceneAct" class="meta-select">
+                                    <option value="">Акт</option>
+                                    <option value="1">Акт 1</option>
+                                    <option value="2">Акт 2</option>
+                                    <option value="3">Акт 3</option>
+                                </select>
+                                <select id="sceneStatus" class="meta-select">
+                                    <option value="draft">📝 Черновик</option>
+                                    <option value="review">👀 На проверке</option>
+                                    <option value="ready">✅ Готово</option>
+                                </select>
+                                <input type="text" id="sceneTags" placeholder="Теги (через запятую)" class="meta-input">
+                            </div>
+                        </div>
+                        
+                        <div class="editor-toolbar">
+                            <button class="format-btn" data-format="bold" title="Жирный">𝐁</button>
+                            <button class="format-btn" data-format="italic" title="Курсив">𝘐</button>
+                            <button class="format-btn" data-format="underline" title="Подчеркнутый">𝘜</button>
+                            <button class="format-btn" data-format="strikeThrough" title="Зачёркнутый">𝚂</button>
+                            <div class="toolbar-separator"></div>
+                            <button class="format-btn" data-command="formatBlock" data-value="h3" title="Заголовок">H</button>
+                            <button class="format-btn" data-command="formatBlock" data-value="p" title="Параграф">P</button>
+                            <div class="toolbar-separator"></div>
+                            <div class="color-picker-wrapper">
+                                <input type="color" id="textColorPicker" value="#000000" title="Цвет текста">
+                                <span>🎨</span>
+                            </div>
+                            <select id="highlightColor" title="Выделение цветом">
+                                <option value="">Выделение</option>
+                                <option value="#ffff00">Жёлтый</option>
+                                <option value="#00ff00">Зелёный</option>
+                                <option value="#00ffff">Голубой</option>
+                                <option value="#ff00ff">Розовый</option>
+                                <option value="#ffa500">Оранжевый</option>
+                                <option value="#ff6b6b">Красный</option>
+                            </select>
+                            <div class="toolbar-separator"></div>
+                            <select id="characterInsert" title="Вставить персонажа">
+                                <option value="">+ Персонаж</option>
+                            </select>
+                            <button class="format-btn" id="addDialogueBtn" title="Режим диалога">💬 Диалог</button>
+                        </div>
+                        
+                        <div class="editor-fields">
+                            <input type="text" id="sceneTitle" placeholder="Название сцены" class="editor-input">
+                            <div class="scene-meta-inline">
+                                <input type="text" id="sceneLocation" placeholder="📍 Место действия" class="editor-input inline">
+                                <input type="text" id="sceneTime" placeholder="⏰ Время" class="editor-input inline">
+                                <input type="text" id="sceneDay" placeholder="📅 День" class="editor-input inline">
+                            </div>
+                            
+                            <!-- Conflict and Goal -->
+                            <div class="scene-objectives">
+                                <div class="objective-field">
+                                    <label>🎯 Цель сцены:</label>
+                                    <input type="text" id="sceneGoal" placeholder="Чего хочет достичь персонаж?" class="objective-input">
+                                </div>
+                                <div class="objective-field">
+                                    <label>⚔️ Конфликт:</label>
+                                    <input type="text" id="sceneConflict" placeholder="Что мешает достичь цели?" class="objective-input">
+                                </div>
+                                <div class="objective-field">
+                                    <label>🔄 Поворот:</label>
+                                    <input type="text" id="sceneTwist" placeholder="Как меняется ситуация?" class="objective-input">
+                                </div>
+                            </div>
+                            
+                            <div id="sceneContent" contenteditable="true" class="editor-textarea" placeholder="Описание сцены..."></div>
+                            
+                            <div class="scene-characters" id="sceneCharacters">
+                                <h4>🎭 Персонажи в сцене:</h4>
+                                <div class="character-tags" id="sceneCharacterTags"></div>
+                                <button class="add-char-tag-btn" id="addCharToSceneBtn">+ Добавить персонажа</button>
+                            </div>
+                            
+                            <!-- Notes section -->
+                            <div class="scene-notes">
+                                <h4>📌 Заметки автора:</h4>
+                                <textarea id="sceneNotes" placeholder="Личные заметки, идеи, напоминания..." class="notes-textarea"></textarea>
+                            </div>
+                        </div>
+                        
+                        <div class="editor-actions">
+                            <button id="saveSceneBtn" class="primary-btn">💾 Сохранить</button>
+                            <button id="saveVersionBtn" class="action-btn">📚 Сохранить версию</button>
+                            <button id="versionsBtn" class="action-btn">🕐 Версии</button>
+                            <button id="deleteSceneBtn" class="danger-btn">🗑️ Удалить</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Characters View -->
+            <section id="charactersView" class="view">
+                <div class="view-header">
+                    <h2>Персонажи</h2>
+                    <button id="addCharacterBtn" class="primary-btn">+ Добавить персонажа</button>
+                </div>
+                
+                <div class="characters-container">
+                    <div class="character-list" id="characterList"></div>
+                    <div class="character-editor" id="characterEditor">
+                        <div class="editor-fields">
+                            <input type="text" id="charName" placeholder="Имя персонажа" class="editor-input">
+                            <input type="text" id="charRole" placeholder="Роль (протагонист, антагонист...)" class="editor-input">
+                            <input type="text" id="charAge" placeholder="Возраст" class="editor-input">
+                            <textarea id="charDescription" placeholder="Физическое описание" class="editor-textarea"></textarea>
+                            <textarea id="charPersonality" placeholder="Характер и черты личности" class="editor-textarea"></textarea>
+                            <textarea id="charBackground" placeholder="Предыстория" class="editor-textarea"></textarea>
+                            <textarea id="charMotivation" placeholder="Мотивация и цели" class="editor-textarea"></textarea>
+                            <div class="color-field">
+                                <label>Цвет персонажа:</label>
+                                <input type="color" id="charColor" value="#3498db">
+                            </div>
+                        </div>
+                        <div class="editor-actions">
+                            <button id="saveCharacterBtn" class="primary-btn">Сохранить персонажа</button>
+                            <button id="deleteCharacterBtn" class="danger-btn">Удалить</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Relationships View -->
+            <section id="relationshipsView" class="view">
+                <div class="view-header">
+                    <h2>Взаимосвязи персонажей</h2>
+                </div>
+                
+                <div class="relationships-container">
+                    <div class="relationship-builder">
+                        <div class="relationship-form">
+                            <select id="relChar1" class="editor-input">
+                                <option value="">Выберите первого персонажа</option>
+                            </select>
+                            <select id="relType" class="editor-input">
+                                <option value="">Тип связи</option>
+                                <option value="family">Семейные</option>
+                                <option value="friend">Друзья</option>
+                                <option value="enemy">Враги</option>
+                                <option value="love">Любовные</option>
+                                <option value="work">Коллеги</option>
+                                <option value="mentor">Наставник/Ученик</option>
+                                <option value="other">Другое</option>
+                            </select>
+                            <select id="relChar2" class="editor-input">
+                                <option value="">Выберите второго персонажа</option>
+                            </select>
+                            <input type="text" id="relDescription" placeholder="Описание связи" class="editor-input">
+                            <button id="addRelationshipBtn" class="primary-btn">Добавить связь</button>
+                        </div>
+                    </div>
+                    
+                    <div class="relationship-graph" id="relationshipGraph">
+                        <svg id="graphSvg" width="800" height="600"></svg>
+                    </div>
+                    
+                    <div class="relationship-list" id="relationshipList"></div>
+                </div>
+            </section>
+
+            <!-- Timeline View -->
+            <section id="timelineView" class="view">
+                <div class="view-header">
+                    <h2>Линия повествования</h2>
+                    <button id="addToTimelineBtn" class="primary-btn">+ Добавить в линию</button>
+                </div>
+                
+                <div class="timeline-container" id="timelineContainer">
+                    <div class="timeline" id="timeline"></div>
+                </div>
+            </section>
+
+            <!-- Search View -->
+            <section id="searchView" class="view">
+                <div class="view-header">
+                    <h2>Поиск</h2>
+                </div>
+                
+                <div class="search-container">
+                    <div class="search-box">
+                        <input type="text" id="searchInput" placeholder="Поиск по сюжету, персонажам, сценам..." class="search-input">
+                        <div class="search-filters">
+                            <label><input type="checkbox" id="searchScenes" checked> Сцены</label>
+                            <label><input type="checkbox" id="searchCharacters" checked> Персонажи</label>
+                            <label><input type="checkbox" id="searchRelationships" checked> Связи</label>
+                        </div>
+                    </div>
+                    
+                    <div class="search-results" id="searchResults"></div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close">&times;</span>
+            <div id="modalBody"></div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
